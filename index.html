@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏪 Restaurant Change-Making System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏪 Restaurant Change-Making System</h1>
+            <p>Discrete Mathematics Project – Greedy Algorithm (Pakistan)</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>💰Payment Details</h2>
+
+                <div class="input-group">
+                    <label>Bill Amount (Rs.)</label>
+                    <input type="number" id="bill" placeholder="e.g. 720" value="720">
+                </div>
+
+                <div class="input-group">
+                    <label>Paid Amount (Rs.)</label>
+                    <input type="number" id="paid" placeholder="e.g. 5000" value="5000">
+                </div>
+
+                <button onclick="calculateChange()">💵Calculate Change</button>
+
+                <div id="result"></div>
+            </div>
+
+            <div class="info">
+                <h3>📚 Greedy Algorithm Explanation</h3>
+                <p>
+                    The greedy algorithm selects the largest possible Pakistani currency
+                    denomination first (Rs.5000, Rs.1000, etc.) and continues until the
+                    remaining change becomes zero. This ensures minimum number of notes
+                    and fast computation.
+                </p>
+            </div>
+        </main>
+
+        <footer>
+            <p>© Discrete Mathematics Project | Restaurant Change-Making System (PKR)</p>
+        </footer>
+    </div>
+
+    <script>
+    function calculateChange() {
+        let bill = parseInt(document.getElementById("bill").value);
+        let paid = parseInt(document.getElementById("paid").value);
+        let resultDiv = document.getElementById("result");
+
+        if (isNaN(bill) || isNaN(paid)) {
+            resultDiv.innerHTML = "<p class='error'>Please enter valid amounts.</p>";
+            return;
+        }
+
+        if (paid < bill) {
+            resultDiv.innerHTML = "<p class='error'>Paid amount is less than bill amount.</p>";
+            return;
+        }
+
+        let change = paid - bill;
+        let totalChange = change;
+        
+        let denominations = [5000, 1000, 500, 100, 50, 20, 10, 5, 2, 1];
+        let notes = [];
+        
+        for (let i = 0; i < denominations.length; i++) {
+            let denom = denominations[i];
+            let count = Math.floor(change / denom);
+            
+            if (count > 0) {
+                notes.push({denom: denom, count: count});
+                change = change % denom;
+            }
+        }
+        
+        let output = `<div class="change-amount">
+            <h3>Total Change: Rs. ${totalChange}</h3>
+            <p class="formula">${paid} - ${bill} = ${totalChange}</p>
+        </div>`;
+        
+        output += `<div class="notes-output">`;
+        
+        notes.forEach(note => {
+            output += `<div class="note-line">
+                <span class="denomination">Rs. ${note.denom}</span>
+                <span class="count">${note.count} notes</span>
+            </div>`;
+        });
+        
+        if (notes.length === 0) {
+            output += `<div class="note-line">No change required</div>`;
+        }
+        
+        output += `</div>`;
+        
+        output += `<div class="summary">
+            <p>Total Notes: ${notes.reduce((sum, note) => sum + note.count, 0)}</p>
+            <p>Remaining: Rs. ${change}</p>
+        </div>`;
+
+        resultDiv.innerHTML = output;
+    }
+    </script>
+</body>
+</html>
